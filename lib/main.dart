@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ui/AppColors.dart';
+import 'package:ui/appColors.dart';
+
+import 'GraphPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// 홈페이지
+
 class HomePage extends StatelessWidget {
   final String title;
 
@@ -48,7 +50,10 @@ class HomePage extends StatelessWidget {
                     ),
                     backgroundColor: AppColors.mainBlue),
                 onPressed: () {
-                  print('시작하기 버튼을 눌렀습니다.');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const GraphPage()),
+                  );
                 },
                 child: const Text(
                   '시작하기',
