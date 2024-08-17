@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ui/appColors.dart';
+import 'package:ui/app_colors.dart';
 
-import 'GraphPage.dart';
+import 'graph_page.dart';
 
 void main() {
   runApp(const MyApp());

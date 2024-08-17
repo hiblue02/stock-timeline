@@ -1,26 +1,44 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-import 'AppColors.dart';
+import 'app_colors.dart';
+import 'description_with_line.dart';
 
 class GraphPage extends StatefulWidget {
-  const GraphPage({Key? key}) : super(key: key);
+  const GraphPage({super.key});
 
   @override
   _LineChart createState() => _LineChart();
 }
 
 class _LineChart extends State<GraphPage> {
-  int? selectedPointIndex;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('테슬라 주식 변화 1900~2100')),
         body: Padding(
-            padding: const EdgeInsets.fromLTRB(80, 30, 80, 10),
-            child: LineChart(sampleData)));
+            padding: const EdgeInsets.fromLTRB(30, 30, 100, 30),
+            child: Stack(children: [
+              LineChart(sampleData),
+              Positioned.fill(child: description)
+            ])));
   }
+
+  Stack get description => Stack(
+          children: List.generate(spotData_Date.length, (index) {
+        double chartHeight = MediaQuery.of(context).size.height;
+        double chartWidth = MediaQuery.of(context).size.width;
+        double positionX = ((chartWidth + 30) / spotData_Date.length) * (index) ;
+        double amount = spotData_amount[index];
+        double positionY = ((amount - minY) / (maxY - minY)) * (chartHeight-80);
+
+        return DescriptionWithLine(
+            description: spotData_description[index],
+            positionX: positionX,
+            positionY: positionY,
+            chartHeight: chartHeight,
+            chartWidth: chartWidth);
+      }));
 
   final List<double> spotData_amount = [
     10.0,
@@ -46,9 +64,23 @@ class _LineChart extends State<GraphPage> {
     '2024-01-09',
   ];
 
-  double get minY => spotData_amount.reduce((a, b) => a < b ? a : b) - 5;
-  double get maxY => spotData_amount.reduce((a, b) => a > b ? a : b) + 5;
-  double get intervalY => (maxY - minY) / spotData_amount.length;
+  final List<String> spotData_description = [
+    '날이 밝으면 태양이 당신에게 새로운 힘을 주기를',
+    '밤이 되면 달이 당신을 부드럽게 회복시켜 주기를',
+    '비가 당신의 근심걱정을 모두 씻어 주기를',
+    '산들바람이 당신의 몸에 새로운 활력을 불어넣어 주기를',
+    '당신이 이 세상을 사뿐사뿐 걸어갈 수 있기를',
+    '당신이 살아 있는 동안 내내 그 아름다움을 깨닫게 되기를',
+    '아파치족의 기도',
+    '어도비',
+    '옥수수가 익어가는 달',
+  ];
+
+  double get minY => spotData_amount.reduce((a, b) => a < b ? a : b) - 10;
+
+  double get maxY => spotData_amount.reduce((a, b) => a > b ? a : b) + 10;
+
+  double get intervalY => double.parse(((maxY - minY) / spotData_amount.length).toStringAsFixed(2));
 
   LineChartData get sampleData => LineChartData(
         lineTouchData: lineTouchData,
@@ -80,8 +112,16 @@ class _LineChart extends State<GraphPage> {
   LineTouchData get lineTouchData => LineTouchData(
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(
-          getTooltipColor: (touchedSpot) => AppColors.mainBeige,
-        ),
+            tooltipBorder: const BorderSide(color: AppColors.mainBlue),
+            maxContentWidth: 500,
+            getTooltipColor: (color) => Colors.white,
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((touchedSpot) {
+                int index = touchedSpot.x.toInt();
+                return LineTooltipItem(spotData_description[index],
+                    const TextStyle(color: AppColors.mainBlue));
+              }).toList();
+            }),
       );
 
   List<LineChartBarData> get lineBarsData => [
@@ -107,7 +147,6 @@ class _LineChart extends State<GraphPage> {
       barWidth: 3,
       isStrokeCapRound: true,
       dotData: const FlDotData(show: true),
-      belowBarData: BarAreaData(show: false),
       spots: List.generate(spotData_Date.length,
           (index) => FlSpot(index.toDouble(), spotData_amount[index])));
 
@@ -155,34 +194,4 @@ class _LineChart extends State<GraphPage> {
         interval: 1,
         getTitlesWidget: bottomTitleWidgets,
       );
-
-
-  Widget buildTooltips() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(spotData_Date.length, (index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-          child: Column(
-            children: [
-              Text(spotData_Date[index]),
-              Container(
-                margin: const EdgeInsets.only(top: 5.0),
-                padding: const EdgeInsets.all(5.0),
-                decoration: BoxDecoration(
-                  color: Colors.blueGrey.withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  spotData_amount[index].toString(),
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        );
-      }),
-    );
-  }
 }
-
