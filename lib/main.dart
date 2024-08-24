@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ui/app_colors.dart';
+import 'package:ui/flow_chart.dart';
 
-import 'graph_page.dart';
+import 'chart_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class HomePage extends StatelessWidget {
   final String title;
 
@@ -44,7 +44,8 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 20.0),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
@@ -52,7 +53,7 @@ class HomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const GraphPage()),
+                    MaterialPageRoute(builder: (context) => const ChartsListPage()),
                   );
                 },
                 child: const Text(
@@ -61,7 +62,7 @@ class HomePage extends StatelessWidget {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
-                ))
+                )),
           ]),
         ));
   }
