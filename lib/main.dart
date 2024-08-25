@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ui/AppColors.dart';
+import 'package:ui/app_colors.dart';
+import 'package:ui/flow_chart.dart';
+
+import 'chart_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +25,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// 홈페이지
 class HomePage extends StatelessWidget {
   final String title;
 
@@ -42,13 +44,17 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 20.0),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     backgroundColor: AppColors.mainBlue),
                 onPressed: () {
-                  print('시작하기 버튼을 눌렀습니다.');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChartsListPage()),
+                  );
                 },
                 child: const Text(
                   '시작하기',
@@ -56,7 +62,7 @@ class HomePage extends StatelessWidget {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
-                ))
+                )),
           ]),
         ));
   }
