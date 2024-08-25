@@ -30,7 +30,7 @@ class FlowChart extends StatelessWidget {
             format: 'point.x: point.y',
             canShowMarker: true,
           ),
-          series: <ChartSeries>[
+          series: <CartesianSeries>[
             LineSeries<SalesData, String>(
               dataSource: <SalesData>[
                 SalesData('Jan', 35),

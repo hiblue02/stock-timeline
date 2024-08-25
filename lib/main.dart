@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ui/app_colors.dart';
-import 'package:ui/flow_chart.dart';
 
 import 'chart_list.dart';
 
@@ -53,11 +52,12 @@ class HomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ChartsListPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const ChartsListPage()),
                   );
                 },
                 child: const Text(
-                  '시작하기',
+                  'Start',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
