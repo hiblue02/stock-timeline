@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ui/app_function.dart';
 import 'package:ui/model/data.dart';
 
-Future<void> edit(BuildContext context, ChartData chart) async {
+Future<void> edit(BuildContext context, ChartData? chart) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: true, // 사용자가 다이얼로그 밖을 클릭해도 다이얼로그가 닫히도록 설정
@@ -13,7 +13,7 @@ Future<void> edit(BuildContext context, ChartData chart) async {
 }
 
 class _EditDialog extends StatefulWidget {
-  final ChartData chart;
+  final ChartData? chart;
 
   const _EditDialog({required this.chart});
 
@@ -27,7 +27,7 @@ class _EditDialogState extends State<_EditDialog> {
   @override
   void initState() {
     super.initState();
-    titleController = TextEditingController(text: widget.chart.title);
+    titleController = TextEditingController(text: widget.chart?.title);
   }
 
   @override
@@ -68,7 +68,7 @@ class _EditDialogState extends State<_EditDialog> {
           onPressed: () {
             // 제목을 업데이트하고 다이얼로그를 닫습니다
             setState(() {
-              widget.chart.title = titleController.text;
+              widget.chart?.title = titleController.text;
             });
             Navigator.of(context).pop();
           },

@@ -59,7 +59,15 @@ class ChartsListPage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Chart List'),
+          title: const Center(child: Text('Chart List')),
+          actions: [
+            Container(
+                alignment: Alignment.centerRight,
+                child: TextButton(onPressed: () {
+                  edit(context, null);
+                }, child: const Text("Create"))),
+            const SizedBox(width: 50),
+          ],
         ),
         body: Align(
           alignment: Alignment.topCenter,
