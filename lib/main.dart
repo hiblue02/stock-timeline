@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ui/app_colors.dart';
-import 'package:ui/flow_chart.dart';
 
 import 'chart_list.dart';
 
@@ -19,6 +18,40 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.mainBlue),
         useMaterial3: true,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            padding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            foregroundColor: Colors.white,
+            backgroundColor: AppColors.mainBlue,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            // Button color
+            textStyle: const TextStyle(
+              fontSize: 10.0,
+              fontWeight: FontWeight.normal,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        // Text Style
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(
+            fontSize: 10.0,
+            fontWeight: FontWeight.normal,
+            color: AppColors.mainBlue,
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white, // AppBar background color
+          foregroundColor: AppColors.mainBlue, // Title text color
+          titleTextStyle: TextStyle(
+            // fontSize: 20, // Title font size
+            fontWeight: FontWeight.bold, // Title font weight
+            color: AppColors.mainBlue
+          ),
+        ),
       ),
       home: const HomePage(title: 'Stock TimeLine'),
     );
@@ -43,25 +76,16 @@ class HomePage extends StatelessWidget {
                     color: AppColors.mainBlue)),
             const SizedBox(height: 20),
             ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 20.0),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    backgroundColor: AppColors.mainBlue),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ChartsListPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const ChartsListPage()),
                   );
                 },
                 child: const Text(
-                  '시작하기',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                  'Start',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 )),
           ]),
         ));

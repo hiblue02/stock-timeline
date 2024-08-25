@@ -8,7 +8,7 @@ class FlowChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Syncfusion Flutter Charts Demo'),
+        title: const Text('Syncfusion Flutter Charts Demo'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,7 +30,7 @@ class FlowChart extends StatelessWidget {
             format: 'point.x: point.y',
             canShowMarker: true,
           ),
-          series: <ChartSeries>[
+          series: <CartesianSeries>[
             LineSeries<SalesData, String>(
               dataSource: <SalesData>[
                 SalesData('Jan', 35),

@@ -10,8 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  syncfusion_flutter_charts: ^20.1.55
+  syncfusion_flutter_charts: ^22.2.9
   excel: ^2.0.9
+  file_picker: ^8.1.2
+  path_provider: ^2.1.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
