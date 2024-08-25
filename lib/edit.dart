@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ui/app_function.dart';
-import 'package:ui/app_style.dart';
 import 'package:ui/model/data.dart';
 
 Future<void> edit(BuildContext context, ChartData chart) async {
@@ -48,14 +47,19 @@ class _EditDialogState extends State<_EditDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
-              child:
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(hintText: 'Enter new title'),
-                ),
+              child: TextField(
+                controller: titleController,
+                decoration: const InputDecoration(hintText: 'Enter new title'),
+              ),
             ),
-             const SizedBox(width: 16), // 간격을 조정합니다
-            appButton("Upload File", () => uploadExcel())
+            const SizedBox(width: 16), // 간격을 조정합니다
+            ElevatedButton(
+                onPressed: () {
+                  uploadExcel();
+                },
+                child: const Text(
+                  ("Upload File"),
+                ))
           ],
         ),
       ),
