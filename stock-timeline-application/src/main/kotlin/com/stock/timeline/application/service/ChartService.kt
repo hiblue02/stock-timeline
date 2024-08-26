@@ -12,7 +12,7 @@ import java.time.LocalDate
 
 
 @Service
-class ChartService<InputStream>(
+class ChartService(
     private val chartRepository: ChartRepository,
     private val recordRepository: RecordRepository
 ) {
@@ -23,36 +23,52 @@ class ChartService<InputStream>(
     fun getDayRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.DAY)
     fun save(file: MultipartFile, title: String) {
         val workbook = WorkbookFactory.create(file.inputStream)
-
         val chart = chartRepository.save(Chart(title = title))
-
-        RecordType.entries.forEach { recordType ->
-            run {
-                val sheet: Sheet = workbook.getSheet(recordType.name)
-                extractedRecord(sheet, chart, recordType)
-            }
-        }
+        recordRepository.saveAll(extractedRecords(workbook, chart))
         workbook.close()
 
     }
 
-    private fun extractedRecord(
+    private fun extractedRecords(
+        workbook: Workbook,
+        chart: Chart
+    ): MutableList<Record> {
+        val records = mutableListOf<Record>()
+        RecordType.entries.forEach { recordType ->
+            val sheet = workbook.getSheet(recordType.name)
+            sheet?.let {
+                records.addAll(extractedSheetRecord(sheet, chart, recordType))
+            }
+        }
+        return records
+    }
+
+    fun save(chartId: Long, file: MultipartFile, title: String) {
+        val chart = chartRepository.findById(chartId).orElseThrow { NoSuchElementException() }
+        chart.title = title
+        recordRepository.deleteAllByChart(chart)
+        val workbook = WorkbookFactory.create(file.inputStream)
+        recordRepository.saveAll(extractedRecords(workbook, chart))
+    }
+
+    private fun extractedSheetRecord(
         sheet: Sheet,
         chart: Chart,
         type: RecordType
-    ) {
+    ): MutableList<Record> {
+        val records = mutableListOf<Record>()
         for (row in sheet) {
             if (row.rowNum <= 2) continue
-            recordRepository.save(
-                Record(
-                    date = extractedDate(row),
-                    price = extractedPrice(row),
-                    description = extractedDescription(row),
-                    type = type,
-                    chart = chart
-                )
+            val record = Record(
+                date = extractedDate(row),
+                price = extractedPrice(row),
+                description = extractedDescription(row),
+                type = type,
+                chart = chart
             )
+            records.add(record)
         }
+        return records
     }
 
     private fun extractedDescription(row: Row): String {
@@ -83,5 +99,6 @@ class ChartService<InputStream>(
             throw IllegalArgumentException("Cell does not contain a numeric date.")
         }
     }
+
 }
 
