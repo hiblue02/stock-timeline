@@ -40,8 +40,8 @@ internal class ChartController(
     }
 
     @PostMapping("/upload")
-    fun upload(@RequestParam file:MultipartFile) : ResponseEntity<String>{
-        chartService.save(file)
+    fun upload(@RequestParam file:MultipartFile, @RequestParam title: String) : ResponseEntity<String>{
+        chartService.save(file, title)
         return ResponseEntity.ok("success")
     }
 
