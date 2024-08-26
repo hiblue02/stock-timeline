@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping("charts")
 internal class ChartController(
-    private val chartService: ChartService<Any?>
+    private val chartService: ChartService
 ) {
 
     @GetMapping
@@ -45,5 +45,10 @@ internal class ChartController(
         return ResponseEntity.ok("success")
     }
 
+    @PostMapping("/{chartId}/ upload")
+    fun uploadAgain(@RequestParam file:MultipartFile, @RequestParam title: String, @PathVariable chartId: Long) : ResponseEntity<String>{
+        chartService.save(chartId, file, title)
+        return ResponseEntity.ok("success")
+    }
 }
 
