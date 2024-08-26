@@ -11,6 +11,6 @@ data class Chart(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val title: String,
-    val updateDateTime: LocalDateTime
+    val updateDateTime: LocalDateTime = LocalDateTime.now()
 )
 

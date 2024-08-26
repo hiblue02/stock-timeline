@@ -4,16 +4,14 @@ import com.stock.timeline.application.domain.Chart
 import com.stock.timeline.application.domain.Record
 import com.stock.timeline.application.service.ChartService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 
 @RestController
 @RequestMapping("charts")
 internal class ChartController(
-    private val chartService: ChartService
+    private val chartService: ChartService<Any?>
 ) {
 
     @GetMapping
@@ -41,6 +39,11 @@ internal class ChartController(
         return ResponseEntity.ok(dayRecords)
     }
 
+    @PostMapping("/upload")
+    fun upload(@RequestParam file:MultipartFile) : ResponseEntity<String>{
+        chartService.save(file)
+        return ResponseEntity.ok("success")
+    }
 
 }
 
