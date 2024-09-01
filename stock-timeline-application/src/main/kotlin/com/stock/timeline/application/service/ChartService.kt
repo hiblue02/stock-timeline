@@ -5,9 +5,15 @@ import com.stock.timeline.application.domain.Record
 import com.stock.timeline.application.domain.RecordType
 import com.stock.timeline.application.repository.ChartRepository
 import com.stock.timeline.application.repository.RecordRepository
+import com.stock.timeline.application.sample.sampleDayRecord
+import com.stock.timeline.application.sample.sampleMonthRecord
+import com.stock.timeline.application.sample.sampleWeekRecord
 import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.time.LocalDate
 
 
@@ -17,7 +23,7 @@ class ChartService(
     private val recordRepository: RecordRepository
 ) {
 
-    fun getAllCharts(): List<Chart> = chartRepository.findAll();
+    fun getAllCharts(): List<Chart> = chartRepository.findAll()
     fun getMonthRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.MONTH)
     fun getWeekRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.WEEK)
     fun getDayRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.DAY)
@@ -26,7 +32,60 @@ class ChartService(
         val chart = chartRepository.save(Chart(title = title))
         recordRepository.saveAll(extractedRecords(workbook, chart))
         workbook.close()
+    }
 
+    fun downloadSample(): ByteArrayInputStream {
+        val workbook = XSSFWorkbook()
+        RecordType.entries.forEach { recordType ->
+            val sheet = workbook.createSheet(recordType.name)
+            val records = when (recordType) {
+                RecordType.DAY -> sampleDayRecord()
+                RecordType.WEEK -> sampleWeekRecord()
+                RecordType.MONTH -> sampleMonthRecord()
+            }
+            addRecordsToSheet(sheet, records)
+        }
+
+        val baos = ByteArrayOutputStream()
+        workbook.write(baos)
+        workbook.close()
+        return ByteArrayInputStream(baos.toByteArray())
+    }
+
+    // 실제 데이터 레코드를 다운로드하는 함수
+    fun downloadExcel(chartId: Long): ByteArrayInputStream {
+        val workbook = XSSFWorkbook()
+        RecordType.entries.forEach { recordType ->
+            val sheet = workbook.createSheet(recordType.name)
+            val records = when (recordType) {
+                RecordType.DAY -> getDayRecords(chartId)
+                RecordType.WEEK -> getWeekRecords(chartId)
+                RecordType.MONTH -> getMonthRecords(chartId)
+            }
+            addRecordsToSheet(sheet, records)
+        }
+
+        val baos = ByteArrayOutputStream()
+        workbook.write(baos)
+        workbook.close()
+        return ByteArrayInputStream(baos.toByteArray())
+    }
+
+    // 데이터를 추가하는 함수
+    private fun addRecordsToSheet(sheet: Sheet, records: List<Record>) {
+        val header = sheet.createRow(0)
+        val headerColumns = arrayOf("date", "price", "description")
+        headerColumns.forEachIndexed { index, column ->
+            val cell = header.createCell(index)
+            cell.setCellValue(column)
+        }
+
+        records.forEachIndexed { index, record ->
+            val row = sheet.createRow(1 + index)
+            row.createCell(0).setCellValue(record.date)
+            row.createCell(1).setCellValue(record.price)
+            row.createCell(2).setCellValue(record.description)
+        }
     }
 
     private fun extractedRecords(
