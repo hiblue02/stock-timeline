@@ -11,6 +11,7 @@ import com.stock.timeline.application.sample.sampleWeekRecord
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -27,6 +28,7 @@ class ChartService(
     fun getMonthRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.MONTH)
     fun getWeekRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.WEEK)
     fun getDayRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.DAY)
+    @Transactional
     fun save(file: MultipartFile, title: String) {
         val workbook = WorkbookFactory.create(file.inputStream)
         val chart = chartRepository.save(Chart(title = title))
@@ -101,7 +103,7 @@ class ChartService(
         }
         return records
     }
-
+    @Transactional
     fun save(chartId: Long, file: MultipartFile, title: String) {
         val chart = chartRepository.findById(chartId).orElseThrow { NoSuchElementException() }
         chart.title = title
