@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import java.io.ByteArrayInputStream
 
 
@@ -55,15 +56,18 @@ internal class ChartController(
     }
 
     @GetMapping("/download")
-    fun downloadSample(): ResponseEntity<ByteArrayInputStream> {
+    fun downloadSample(): ResponseEntity<StreamingResponseBody> {
         val excelStream: ByteArrayInputStream = chartService.downloadSample()
 
         val headers = HttpHeaders().apply {
             add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=sample.xlsx")
             add(HttpHeaders.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         }
+        val responseBody = StreamingResponseBody { outputStream ->
+            excelStream.copyTo(outputStream)
+        }
 
-        return ResponseEntity(excelStream, headers, HttpStatus.OK)
+        return ResponseEntity(responseBody, headers, HttpStatus.OK)
     }
 
 

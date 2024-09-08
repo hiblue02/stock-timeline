@@ -34,8 +34,7 @@ class _ChartsListPageState extends State<ChartsListPage> {
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('차트가 없습니다.'));
-          }
-          else {
+          } else {
             final rowData = snapshot.data!;
             final DataTable dataTable = DataTable(
               headingTextStyle: const TextStyle(
@@ -98,13 +97,18 @@ class _ChartsListPageState extends State<ChartsListPage> {
         appBar: AppBar(
           title: const Center(child: Text('Chart List')),
           actions: [
-            Container(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                    onPressed: () {
-                      edit(context, null);
-                    },
-                    child: const Text("Create"))),
+            Row(children: [
+              TextButton(
+                  onPressed: () {
+                    edit(context, null);
+                  },
+                  child: const Text("Create")),
+              TextButton(
+                  onPressed: () {
+                    downloadExample();
+                  },
+                  child: const Text("Example")),
+            ]),
             const SizedBox(width: 50),
           ],
         ),
