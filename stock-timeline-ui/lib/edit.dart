@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:ui/app_function.dart';
 import 'package:ui/model/data.dart';
+import 'package:ui/model/server_api.dart';
 
 Future<void> edit(BuildContext context, ChartData? chart) async {
   return showDialog<void>(
@@ -23,6 +26,7 @@ class _EditDialog extends StatefulWidget {
 
 class _EditDialogState extends State<_EditDialog> {
   late TextEditingController titleController;
+  Uint8List? selectedFile;
 
   @override
   void initState() {
@@ -54,8 +58,11 @@ class _EditDialogState extends State<_EditDialog> {
             ),
             const SizedBox(width: 16), // 간격을 조정합니다
             ElevatedButton(
-                onPressed: () {
-                  uploadExcel();
+                onPressed: () async {
+                  final file = await uploadExcel(); // 파일 선택
+                  setState(() {
+                    selectedFile = file;
+                  });
                 },
                 child: const Text(
                   ("Upload File"),
@@ -68,7 +75,8 @@ class _EditDialogState extends State<_EditDialog> {
           onPressed: () {
             // 제목을 업데이트하고 다이얼로그를 닫습니다
             setState(() {
-              widget.chart?.title = titleController.text;
+              final title = titleController.text;
+              sendFileToServer(selectedFile!, title);
             });
             Navigator.of(context).pop();
           },

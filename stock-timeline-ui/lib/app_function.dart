@@ -1,32 +1,21 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 
-Future<void> uploadExcel() async {
+Future<Uint8List?> uploadExcel() async {
   final result = await FilePicker.platform.pickFiles(
     type: FileType.custom,
     allowedExtensions: ['xlsx'],
   );
 
-  if (result != null) {
-    var file = File(result.files.single.path!);
-    await _readExcelFile(file.path);
-  } else {
-    print('No file selected');
-  }
-}
+  if (result == null || result.files.isEmpty) {
+    throw Exception("파일이 선택되지 않았습니다.");
 
-Future<void> _readExcelFile(String path) async {
-  var file = File(path);
-  var bytes = file.readAsBytesSync();
-  var excel = Excel.decodeBytes(bytes);
-
-  for (var table in excel.tables.keys) {
-    for (var row in excel.tables[table]!.rows) {
-      print('$row'); // Print each row
-    }
   }
+
+  return result.files.single.bytes;
 }
 
 Future<void> downloadExcel() async {

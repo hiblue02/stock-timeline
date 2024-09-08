@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDate
+import java.util.Date
 
 
 @Service
@@ -133,7 +134,7 @@ class ChartService(
     }
 
     private fun extractedDescription(row: Row): String {
-        val data = row.getCell(0)
+        val data = row.getCell(2)
         if (data.cellType == CellType.STRING) {
             return data.stringCellValue
         } else {
@@ -142,7 +143,7 @@ class ChartService(
     }
 
     private fun extractedPrice(row: Row): Double {
-        val data = row.getCell(0)
+        val data = row.getCell(1)
         if (data.cellType == CellType.NUMERIC) {
             return data.numericCellValue
         } else {
@@ -152,7 +153,7 @@ class ChartService(
 
     private fun extractedDate(row: Row): LocalDate {
         val data = row.getCell(0)
-        if (data.cellType == CellType.NUMERIC && DateUtil.isCellDateFormatted(data)) {
+        if (data.cellType == CellType.NUMERIC) {
             val numericDate: Double = data.numericCellValue
             return DateUtil.getLocalDateTime(numericDate).toLocalDate()
 
