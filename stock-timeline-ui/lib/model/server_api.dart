@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:ui/model/data.dart';
 
+
 Future<List<ChartData>> fetchCharts() async {
   final response = await http.get(Uri.parse('http://localhost:8080/charts'));
 
