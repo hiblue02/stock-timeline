@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface RecordRepository : JpaRepository<Record, Long> {
@@ -16,5 +15,6 @@ interface RecordRepository : JpaRepository<Record, Long> {
     @Query("delete from Record r where r.chart = ?1")
     fun deleteAllByChart(chart: Chart): Int
 
+    @Query("select r from Record r where r.chart.id = ?1 and r.type = ?2")
     fun findRecordsByChartIdAndType(chartId: Long, type: RecordType): List<Record>
 }

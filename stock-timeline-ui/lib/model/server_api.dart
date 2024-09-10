@@ -6,6 +6,17 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:ui/model/data.dart';
 
+Future<List<RecordData>> fetchDayRecord(int chartId) async {
+  final response =
+      await http.get(Uri.parse('http://localhost:8080/charts/$chartId/day'));
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.map((json) => RecordData.fromJson(json)).toList();
+  } else {
+    throw Exception("일자 데이터를 가져오는데 실패했습니다.");
+  }
+}
 
 Future<List<ChartData>> fetchCharts() async {
   final response = await http.get(Uri.parse('http://localhost:8080/charts'));

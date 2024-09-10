@@ -70,7 +70,7 @@ class _ChartsListPageState extends State<ChartsListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const FlowChart()),
+                              builder: (context) => FlowChart(chartId: chart.id)),
                         );
                       },
                       child: const Text("graph"),

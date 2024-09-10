@@ -1,5 +1,5 @@
 // 샘플 데이터 모델
-import 'dart:ffi';
+
 
 class ChartData {
   final int id;
@@ -21,7 +21,7 @@ class ChartData {
 class RecordData {
   final int id;
   final DateTime date;
-  final Double price;
+  final double price;
   final String description;
 
   RecordData(
