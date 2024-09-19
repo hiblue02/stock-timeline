@@ -18,3 +18,4 @@ interface RecordRepository : JpaRepository<Record, Long> {
     @Query("select r from Record r where r.chart.id = ?1 and r.type = ?2")
     fun findRecordsByChartIdAndType(chartId: Long, type: RecordType): List<Record>
 }
+

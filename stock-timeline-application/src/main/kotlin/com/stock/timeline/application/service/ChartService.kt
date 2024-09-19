@@ -121,7 +121,7 @@ class ChartService(
     ): MutableList<Record> {
         val records = mutableListOf<Record>()
         for (row in sheet) {
-            if (row.rowNum <= 2) continue
+            if (row.rowNum < 1) continue
             val record = Record(
                 date = extractedDate(row),
                 price = extractedPrice(row),
