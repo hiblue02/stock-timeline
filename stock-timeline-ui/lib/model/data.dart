@@ -19,20 +19,18 @@ class ChartData {
 }
 
 class RecordData {
-  final int id;
   final DateTime date;
   final double price;
   final String description;
 
   RecordData(
-      {required this.id,
+      {
       required this.date,
       required this.price,
       required this.description});
 
   factory RecordData.fromJson(Map<String, dynamic> json) {
     return RecordData(
-        id: json['id'],
         date: DateTime.parse(json['date']),
         price: json['price'],
         description: json['description']);

@@ -6,9 +6,9 @@ import 'package:ui/model/server_api.dart';
 import 'model/data.dart';
 
 class FlowChart extends StatefulWidget {
-  final int chartId;
+  final ChartData chart;
 
-  const FlowChart({super.key, required this.chartId});
+  const FlowChart({super.key, required this.chart});
 
   @override
   State createState() => _FlowChartState();
@@ -20,7 +20,7 @@ class _FlowChartState extends State<FlowChart> {
   @override
   void initState() {
     super.initState();
-    recordsFuture = fetchDayRecord(widget.chartId);
+    recordsFuture = fetchDayRecord(widget.chart.id);
   }
 
   @override
@@ -28,7 +28,33 @@ class _FlowChartState extends State<FlowChart> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Syncfusion Flutter Charts Demo'),
+          title: Center(child: Text(widget.chart.title)),
+          actions: [
+            Row(children: [
+              TextButton(
+                  onPressed: () {
+                    setState(() {
+                      recordsFuture = fetchDayRecord(widget.chart.id);
+                    });
+                  },
+                  child: const Text("Day")),
+              TextButton(
+                  onPressed: () {
+                    setState(() {
+                      recordsFuture = fetchWeekRecord(widget.chart.id);
+                    });
+                  },
+                  child: const Text("Week")),
+              TextButton(
+                  onPressed: () {
+                    setState(() {
+                      recordsFuture = fetchMonthRecord(widget.chart.id);
+                    });
+                  },
+                  child: const Text("Month")),
+            ]),
+            const SizedBox(width: 50),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -48,10 +74,10 @@ class _FlowChartState extends State<FlowChart> {
               final records = snapshot.data!;
               return SfCartesianChart(
                 primaryXAxis: CategoryAxis(
-                  title: AxisTitle(text: 'price'), // X축 제목
+                  title: AxisTitle(text: 'date'), // X축 제목
                 ),
                 primaryYAxis: NumericAxis(
-                  title: AxisTitle(text: 'date'), // Y축 제목
+                  title: AxisTitle(text: 'price'), // Y축 제목
                 ),
                 crosshairBehavior: CrosshairBehavior(
                   enable: false,
@@ -60,18 +86,27 @@ class _FlowChartState extends State<FlowChart> {
                   activationMode: ActivationMode.singleTap,
                 ),
                 tooltipBehavior: TooltipBehavior(
-                  enable: true,
-                  format: 'point.x: point.y',
-                  canShowMarker: true,
-                ),
+                    enable: true,
+                    format: 'point.x: point.y',
+                    canShowMarker: true,
+                    builder: (dynamic data, dynamic point, dynamic series,
+                        int pointIndex, int seriesIndex) {
+                      final record = records[pointIndex];
+                      return Container(
+                        padding: EdgeInsets.all(8),
+                        color: Colors.black87,
+                        child: Text(
+                          '${DateFormat('yyyy-MM-dd').format(record.date)} :: ${record.price}\n${record.description}',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }),
                 series: <CartesianSeries>[
                   LineSeries<RecordData, String>(
                     dataSource: records,
                     xValueMapper: (RecordData record, _) =>
                         DateFormat('yyyy-MM-dd').format(record.date),
-                    yValueMapper: (RecordData record, _) =>
-                        record.price,
-                    name: 'Day',
+                    yValueMapper: (RecordData record, _) => record.price,
                     color: Colors.blue,
                   )
                 ],
