@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDate
-import java.util.Date
 
 
 @Service
@@ -29,6 +28,7 @@ class ChartService(
     fun getMonthRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.MONTH)
     fun getWeekRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.WEEK)
     fun getDayRecords(chartId: Long) = recordRepository.findRecordsByChartIdAndType(chartId, RecordType.DAY)
+
     @Transactional
     fun save(file: MultipartFile, title: String) {
         val workbook = WorkbookFactory.create(file.inputStream)
@@ -104,6 +104,7 @@ class ChartService(
         }
         return records
     }
+
     @Transactional
     fun save(chartId: Long, file: MultipartFile, title: String) {
         val chart = chartRepository.findById(chartId).orElseThrow { NoSuchElementException() }
@@ -120,7 +121,7 @@ class ChartService(
     ): MutableList<Record> {
         val records = mutableListOf<Record>()
         for (row in sheet) {
-            if (row.rowNum <= 2) continue
+            if (row.rowNum < 1) continue
             val record = Record(
                 date = extractedDate(row),
                 price = extractedPrice(row),

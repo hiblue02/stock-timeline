@@ -25,22 +25,43 @@ internal class ChartController(
     }
 
     @GetMapping("/{chartId}/week")
-    fun getWeekRecords(@PathVariable chartId: Long): ResponseEntity<List<Record>> {
+    fun getWeekRecords(@PathVariable chartId: Long): ResponseEntity<List<RecordData>> {
         val weekRecords = chartService.getWeekRecords(chartId)
-        return ResponseEntity.ok(weekRecords)
+        val recordData = weekRecords.map {
+            RecordData(
+                date = it.date,
+                description = it.description,
+                price = it.price
+            )
+        }
+        return ResponseEntity.ok(recordData)
     }
 
     @GetMapping("/{chartId}/month")
-    fun getMonthRecords(@PathVariable chartId: Long): ResponseEntity<List<Record>> {
+    fun getMonthRecords(@PathVariable chartId: Long): ResponseEntity<List<RecordData>> {
         val monthRecords = chartService.getMonthRecords(chartId)
-        return ResponseEntity.ok(monthRecords)
+        val recordData = monthRecords.map {
+            RecordData(
+                date = it.date,
+                description = it.description,
+                price = it.price
+            )
+        }
+        return ResponseEntity.ok(recordData)
     }
 
 
     @GetMapping("/{chartId}/day")
-    fun getDayRecords(@PathVariable chartId: Long): ResponseEntity<List<Record>> {
+    fun getDayRecords(@PathVariable chartId: Long): ResponseEntity<List<RecordData>> {
         val dayRecords = chartService.getDayRecords(chartId)
-        return ResponseEntity.ok(dayRecords)
+        val recordData = dayRecords.map {
+            RecordData(
+                date = it.date,
+                description = it.description,
+                price = it.price
+            )
+        }
+        return ResponseEntity.ok(recordData)
     }
 
     @PostMapping("/upload")
