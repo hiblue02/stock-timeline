@@ -5,6 +5,8 @@ import 'package:ui/app_function.dart';
 import 'package:ui/model/data.dart';
 import 'package:ui/model/server_api.dart';
 
+import 'chart_list.dart';
+
 Future<void> edit(BuildContext context, ChartData? chart) async {
   return showDialog<void>(
     context: context,
@@ -56,12 +58,13 @@ class _EditDialogState extends State<_EditDialog> {
                 decoration: const InputDecoration(hintText: 'Enter new title'),
               ),
             ),
-            const SizedBox(width: 16), // 간격을 조정합니다
+            const SizedBox(width: 16),
             ElevatedButton(
                 onPressed: () async {
-                  final file = await uploadExcel(); // 파일 선택
+                  final file = await uploadExcel();
                   setState(() {
-                    selectedFile = file;
+                    selectedFile = file.bytes;
+                    titleController.text = file.name.replaceAll(".xlsx", "");
                   });
                 },
                 child: const Text(
@@ -79,6 +82,10 @@ class _EditDialogState extends State<_EditDialog> {
               sendFileToServer(selectedFile!, title);
             });
             Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChartsListPage()),
+            );
           },
           child: const Text('Update'),
         ),
