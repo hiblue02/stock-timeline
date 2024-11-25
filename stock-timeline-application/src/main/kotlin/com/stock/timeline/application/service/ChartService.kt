@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
 @Service
@@ -88,7 +89,7 @@ class ChartService(
 
         records.forEachIndexed { index, record ->
             val row = sheet.createRow(1 + index)
-            row.createCell(0).setCellValue(record.date)
+            row.createCell(0).setCellValue(record.date.format(DateTimeFormatter.ISO_DATE))
             row.createCell(1).setCellValue(record.price)
             row.createCell(2).setCellValue(record.description)
         }
@@ -159,7 +160,8 @@ class ChartService(
         val data = row.getCell(0)
         if (data.cellType == CellType.STRING) {
             val stringDate: String = data.stringCellValue
-            return DateUtils.parseDate(stringDate, "yyyy-MM-dd").toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            return DateUtils.parseDate(stringDate, "yyyy-MM-dd").toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDate()
 
 
         } else {

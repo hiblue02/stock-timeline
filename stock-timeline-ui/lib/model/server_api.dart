@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:excel/excel.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:ui/model/data.dart';
 
 Future<List<RecordData>> fetchDayRecord(int chartId) async {
@@ -20,7 +19,7 @@ Future<List<RecordData>> fetchDayRecord(int chartId) async {
 
 Future<List<RecordData>> fetchWeekRecord(int chartId) async {
   final response =
-  await http.get(Uri.parse('http://localhost:8080/charts/$chartId/week'));
+      await http.get(Uri.parse('http://localhost:8080/charts/$chartId/week'));
 
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
@@ -32,7 +31,7 @@ Future<List<RecordData>> fetchWeekRecord(int chartId) async {
 
 Future<List<RecordData>> fetchMonthRecord(int chartId) async {
   final response =
-  await http.get(Uri.parse('http://localhost:8080/charts/$chartId/month'));
+      await http.get(Uri.parse('http://localhost:8080/charts/$chartId/month'));
 
   if (response.statusCode == 200) {
     List<dynamic> data = json.decode(response.body);
@@ -41,6 +40,7 @@ Future<List<RecordData>> fetchMonthRecord(int chartId) async {
     throw Exception("월간 데이터를 가져오는데 실패했습니다.");
   }
 }
+
 Future<List<ChartData>> fetchCharts() async {
   final response = await http.get(Uri.parse('http://localhost:8080/charts'));
 
@@ -59,19 +59,8 @@ Future<void> downloadExample() async {
   if (response.statusCode == 200) {
     final bytes = response.bodyBytes;
 
-    // 저장할 디렉토리를 가져옵니다.
-    final directory = await getExternalStorageDirectory();
-    if (directory == null) {
-      throw Exception("다운로드 폴더에 접근하지 못했습니다.");
-    }
-
-    final filePath = '${directory.path}/sample.xlsx';
-    final file = File(filePath);
-
-    // 파일에 데이터를 기록합니다.
-    await file.writeAsBytes(bytes);
-
-    print("File saved to $filePath");
+    var excel = Excel.decodeBytes(bytes);
+    excel.save(fileName: 'sample.xlsx');
   } else {
     throw Exception('파일 다운로드에 실패했습니다.. Status code: ${response.statusCode}');
   }
@@ -101,5 +90,19 @@ Future<void> sendFileToServer(Uint8List fileBytes, String title) async {
     }
   } catch (e) {
     print('파일 업로드 중 오류 발생: $e');
+  }
+}
+
+Future<void> downloadChart(ChartData chart) async {
+  final response =
+  await http.get(Uri.parse('http://localhost:8080/charts/${chart.id}/download'));
+
+  if (response.statusCode == 200) {
+    final bytes = response.bodyBytes;
+
+    var excel = Excel.decodeBytes(bytes);
+    excel.save(fileName: '${chart.title}.xlsx');
+  } else {
+    throw Exception('파일 다운로드에 실패했습니다.. Status code: ${response.statusCode}');
   }
 }

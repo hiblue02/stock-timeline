@@ -93,7 +93,7 @@ internal class ChartController(
 
 
     @GetMapping("/{chartId}/download")
-    fun download(@PathVariable chartId: Long): ResponseEntity<ByteArrayInputStream> {
+    fun download(@PathVariable chartId: Long): ResponseEntity<StreamingResponseBody> {
         val excelStream: ByteArrayInputStream = chartService.downloadExcel(chartId)
 
         val headers = HttpHeaders().apply {
@@ -101,7 +101,11 @@ internal class ChartController(
             add(HttpHeaders.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         }
 
-        return ResponseEntity(excelStream, headers, HttpStatus.OK)
+        val responseBody = StreamingResponseBody { outputStream ->
+            excelStream.copyTo(outputStream)
+        }
+
+        return ResponseEntity(responseBody, headers, HttpStatus.OK)
     }
 }
 

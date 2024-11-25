@@ -61,7 +61,7 @@ class _ChartsListPageState extends State<ChartsListPage> {
                     )),
                     DataCell(ElevatedButton(
                       onPressed: () {
-                        downloadExcel();
+                        downloadChart(chart);
                       },
                       child: const Text("download"),
                     )),
