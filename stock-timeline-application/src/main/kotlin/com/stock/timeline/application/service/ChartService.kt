@@ -8,6 +8,7 @@ import com.stock.timeline.application.repository.RecordRepository
 import com.stock.timeline.application.sample.sampleDayRecord
 import com.stock.timeline.application.sample.sampleMonthRecord
 import com.stock.timeline.application.sample.sampleWeekRecord
+import org.apache.commons.lang3.time.DateUtils
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.stereotype.Service
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDate
+import java.time.ZoneId
 
 
 @Service
@@ -60,6 +62,7 @@ class ChartService(
         val workbook = XSSFWorkbook()
         RecordType.entries.forEach { recordType ->
             val sheet = workbook.createSheet(recordType.name)
+
             val records = when (recordType) {
                 RecordType.DAY -> getDayRecords(chartId)
                 RecordType.WEEK -> getWeekRecords(chartId)
@@ -154,12 +157,13 @@ class ChartService(
 
     private fun extractedDate(row: Row): LocalDate {
         val data = row.getCell(0)
-        if (data.cellType == CellType.NUMERIC) {
-            val numericDate: Double = data.numericCellValue
-            return DateUtil.getLocalDateTime(numericDate).toLocalDate()
+        if (data.cellType == CellType.STRING) {
+            val stringDate: String = data.stringCellValue
+            return DateUtils.parseDate(stringDate, "yyyy-MM-dd").toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+
 
         } else {
-            throw IllegalArgumentException("Cell does not contain a numeric date.")
+            throw IllegalArgumentException("Cell does not contain a string date.")
         }
     }
 
