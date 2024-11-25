@@ -5,7 +5,7 @@
 
 ### 구현한 것
 #### 메인 
-- ![stock-timeline-main.png](image%2Fstock-timeline-main.png)
+![stock-timeline-main.png](image%2Fstock-timeline-main.png)
   
 #### 주식 차트 목록
 ![stock-timeline-chart-list.png](image%2Fstock-timeline-chart-list.png)
