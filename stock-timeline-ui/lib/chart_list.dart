@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ui/app_colors.dart';
-import 'package:ui/app_function.dart';
 import 'package:ui/edit.dart';
 import 'package:ui/model/data.dart';
 import 'package:ui/model/server_api.dart';
@@ -56,6 +55,7 @@ class _ChartsListPageState extends State<ChartsListPage> {
                     DataCell(ElevatedButton(
                       onPressed: () {
                         edit(context, chart);
+                        initState();
                       },
                       child: const Text("update"),
                     )),
